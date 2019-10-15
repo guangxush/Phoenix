@@ -1,4 +1,4 @@
-package com.shgx.producer.model;
+package com.shgx.checker.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,8 +17,8 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "payment")
-public class Payment {
+@Table(name = "check")
+public class Check {
     /**
      * 自增id
      */
@@ -28,28 +28,22 @@ public class Payment {
     private Long id;
 
     /**
+     * 校验id
+     */
+    @Column(name = "checkid")
+    private Long checkid;
+
+    /**
      * 支付id
      */
     @Column(name = "payid")
     private Long payid;
 
     /**
-     * 金额
+     * 退款id
      */
-    @Column(name = "money")
-    private Double money;
-
-    /**
-     * 付款方id
-     */
-    @Column(name = "payerid")
-    private Long payerid;
-
-    /**
-     * 收款方id
-     */
-    @Column(name = "payeeid")
-    private Long payeeid;
+    @Column(name = "refundid")
+    private Long refundid;
 
     /**
      * 付款状态
