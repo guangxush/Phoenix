@@ -1,6 +1,7 @@
 package com.shgx.common.model;
 
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.Date;
 
@@ -9,6 +10,7 @@ import java.util.Date;
  * @create: 2019/10/15
  */
 @Data
+@ToString
 public class Payment {
     /**
      * 自增id

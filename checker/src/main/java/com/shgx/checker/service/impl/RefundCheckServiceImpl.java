@@ -1,5 +1,8 @@
 package com.shgx.checker.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.shgx.checker.model.Check;
 import com.shgx.checker.service.CheckInfoService;
 import com.shgx.checker.service.CheckService;
@@ -10,7 +13,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Random;
 
 /**
  * @author: guangxush
@@ -47,42 +53,46 @@ public class RefundCheckServiceImpl implements CheckService {
             return true;
         }
         Payment payment = new Payment();
-        BeanUtils.copyProperties(object, payment);
-
-        if(payment.getPayerid() == null){
-            return true;
+        try{
+            String result = new JSONObject((LinkedHashMap)object).toString();
+            Object object1 = JSON.parseObject(result, new TypeReference<Payment>() {});
+            BeanUtils.copyProperties(object1, payment);
+        }catch (Exception e){
+            String info = "类型转换异常";
+            return checkErrorProcess(info, refundment, payment);
         }
 
         if (refundment.getPayerid().longValue() != payment.getPayerid().longValue()) {
-            String info = String.format("{0}的付款方不一致！", refundment.getId());
+            String info = MessageFormat.format("{0}的付款方不一致,refund付款方为{1}, pay付款方为{2}！", refundment.getPayid(), refundment.getPayerid(), payment.getPayerid());
             return checkErrorProcess(info, refundment, payment);
         }
 
         if (refundment.getPayeeid().longValue() != payment.getPayeeid().longValue()) {
-            String info = String.format("{0}的收款方不一致！", refundment.getId());
+            String info = MessageFormat.format("{0}的收款方不一致,refund收款方为{1}, pay收款方为{2}！", refundment.getPayid(), refundment.getPayeeid(), payment.getPayeeid());
             return checkErrorProcess(info, refundment, payment);
         }
 
         if (refundment.getMoney().doubleValue() != payment.getMoney().doubleValue()) {
-            String info = String.format("{0}的退款金额{1}和转账金额{2}不一致！", refundment.getId(), refundment.getMoney().doubleValue(), payment.getMoney().doubleValue());
+            String info = MessageFormat.format("{0}的退款金额{1}和转账金额{2}不一致！", refundment.getPayid(), refundment.getMoney().doubleValue(), payment.getMoney().doubleValue());
             return checkErrorProcess(info, refundment, payment);
         }
         return true;
     }
 
-    private Boolean checkErrorProcess(String info, Refundment refundment, Payment payment) {
+    public Boolean checkErrorProcess(String info, Refundment refundment, Payment payment) {
         log.error(info);
-        saveCheckInfo(refundment, payment);
+        saveCheckInfo(info, refundment, payment);
         return false;
     }
 
-    private Boolean saveCheckInfo(Refundment refundment, Payment payment) {
+    private Boolean saveCheckInfo(String info, Refundment refundment, Payment payment) {
         Check check = Check.builder()
+                .checkid(Long.valueOf(new Random().nextInt()))
                 .payid(payment.getPayid())
                 .refundid(refundment.getRefundid())
                 .date(new Date())
                 .status(1)
-                .note("")
+                .note(info)
                 .build();
         return checkInfoService.saveCheck(check);
     }

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,7 +40,7 @@ public class CheckInfoServiceImpl implements CheckInfoService {
 
     @Override
     public Boolean saveCheck(Check check) {
-        Optional<List<Check>> checkDB = checkRepo.findAllById(check.getId());
+        Optional<Check> checkDB = checkRepo.findByCheckid(check.getCheckid());
         if (checkDB.isPresent()) {
             return true;
         }

@@ -3,6 +3,7 @@ package com.shgx.producer.controller;
 import com.shgx.common.model.ApiResponse;
 import com.shgx.producer.model.Refundment;
 import com.shgx.producer.service.RefundService;
+import com.shgx.producer.service.impl.PingBackService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,11 @@ public class RefundController {
 
     @Autowired
     private RefundService refundService;
+
+    @Autowired
+    private PingBackService pingBackService;
+
+    String url = "http://localhost:8081/checker/check";
 
     @RequestMapping(path = "/query/{id}", method = RequestMethod.GET)
     @ResponseBody
@@ -43,6 +49,9 @@ public class RefundController {
             return new ApiResponse<Boolean>().success(result);
         } catch (InternalError error) {
             log.error("insert error");
+        }finally {
+            // 发送核对请求
+            pingBackService.jsonRequest(url, refundment);
         }
         return null;
     }

@@ -1,37 +1,26 @@
-package com.shgx.checker.service;
+package com.shgx.producer.service.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shgx.common.model.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Objects;
 
 /**
  * @author: guangxush
- * @create: 2019/10/15
+ * @create: 2019/10/16
  */
+@Service
 @Slf4j
-public abstract class QueryService {
+public class PingBackService {
 
     @Autowired
     private RestTemplateBuilder builder;
 
     private ObjectMapper om = new ObjectMapper();
-
-    /**
-     * 外部查询接口调用
-     *
-     * @param param
-     * @return
-     */
-    public abstract Object doQuery(String param);
-
 
     public Boolean jsonRequest(String url, Object object) {
         Boolean sendResult = false;
@@ -65,42 +54,5 @@ public abstract class QueryService {
             throw new InternalError(String.format("send %s  failed!, the error is %s", object, e));
         }
         return sendResult;
-    }
-
-    /**
-     * 带参数的url请求
-     *
-     * @param url
-     * @param args
-     * @return
-     */
-    public Object paramRequest(String url, String... args) {
-        Object object = null;
-        RestTemplate restTemplate = builder.build();
-        if (url == null) {
-            log.error("the url is null!");
-            return null;
-        }
-        String request = url;
-        StringBuffer sb = new StringBuffer();
-        for (String arg : args) {
-            sb.append(arg);
-        }
-        request += sb.toString();
-        try {
-            ResponseEntity<ApiResponse> entity = restTemplate.getForEntity(request, ApiResponse.class);
-            //如果请求数据成功，返回结果
-            if (entity.getStatusCode() == HttpStatus.OK) {
-                object =Objects.requireNonNull(entity.getBody()).getData();
-                log.info("successfully get the info!");
-                return object;
-            } else {
-                log.info("fail get the info!, the return code is {}", entity.getStatusCode());
-                return object;
-            }
-        } catch (Exception e) {
-            log.error("send the request {} failed!", request);
-        }
-        return object;
     }
 }

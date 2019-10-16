@@ -17,7 +17,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "check")
+@Table(name = "checkment")
 public class Check {
     /**
      * 自增id
