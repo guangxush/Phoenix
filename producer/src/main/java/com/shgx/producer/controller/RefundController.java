@@ -23,7 +23,7 @@ public class RefundController {
     @Autowired
     private PingBackService pingBackService;
 
-    String url = "http://localhost:8081/checker/check";
+    String url = "http://localhost:8082/route/check";
 
     @RequestMapping(path = "/query/{id}", method = RequestMethod.GET)
     @ResponseBody
