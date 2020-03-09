@@ -1,12 +1,10 @@
-package com.shgx.checker.service;
-
+package com.shgx.common.base;
 
 /**
  * @author: guangxush
- * @create: 2019/10/15
+ * @create: 2020/03/09
  */
 public interface CheckService {
-
     /**
      * 判断是否进行校验
      * @param object

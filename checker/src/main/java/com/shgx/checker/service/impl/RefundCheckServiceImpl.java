@@ -5,13 +5,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.shgx.checker.model.Check;
 import com.shgx.checker.service.CheckInfoService;
-import com.shgx.checker.service.CheckService;
+import com.shgx.common.base.CheckService;
 import com.shgx.common.model.Payment;
 import com.shgx.common.model.Refundment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
+import com.alibaba.dubbo.config.annotation.Service;
 
 import java.text.MessageFormat;
 import java.util.Date;
@@ -22,7 +23,8 @@ import java.util.Random;
  * @author: guangxush
  * @create: 2019/10/15
  */
-@Service
+@Component
+@Service(version = "1.0.0", timeout = 3000)
 @Slf4j
 public class RefundCheckServiceImpl implements CheckService {
 

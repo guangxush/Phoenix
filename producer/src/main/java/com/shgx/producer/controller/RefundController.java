@@ -1,9 +1,10 @@
 package com.shgx.producer.controller;
 
+import com.shgx.common.base.CheckService;
 import com.shgx.common.model.ApiResponse;
 import com.shgx.producer.model.Refundment;
 import com.shgx.producer.service.RefundService;
-import com.shgx.producer.service.impl.PingBackService;
+import com.alibaba.dubbo.config.annotation.Reference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +21,9 @@ public class RefundController {
     @Autowired
     private RefundService refundService;
 
-    @Autowired
-    private PingBackService pingBackService;
+    @Reference(version = "1.0.0", timeout = 3000)
+    private CheckService checkService;
 
-    /**
-     * 可配置为从DB中取（注意缓存的使用）
-     */
-    String url = "http://localhost:8082/route/check?ports=8081&services=check";
 
     @RequestMapping(path = "/query/{id}", method = RequestMethod.GET)
     @ResponseBody
@@ -53,8 +50,8 @@ public class RefundController {
         } catch (InternalError error) {
             log.error("insert error");
         }finally {
-            // 发送核对请求
-            pingBackService.jsonRequest(url, refundment);
+            // RPC调用核对服务
+            checkService.doCheck(refundment);
         }
         return null;
     }
