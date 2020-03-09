@@ -23,7 +23,10 @@ public class RefundController {
     @Autowired
     private PingBackService pingBackService;
 
-    String url = "http://localhost:8082/route/check";
+    /**
+     * 可配置为从DB中取（注意缓存的使用）
+     */
+    String url = "http://localhost:8082/route/check?ports=8081&services=check";
 
     @RequestMapping(path = "/query/{id}", method = RequestMethod.GET)
     @ResponseBody
