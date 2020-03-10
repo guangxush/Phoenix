@@ -1,10 +1,10 @@
 package com.shgx.producer.controller;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.shgx.common.base.CheckService;
 import com.shgx.common.model.ApiResponse;
 import com.shgx.producer.model.Refundment;
 import com.shgx.producer.service.RefundService;
-import com.alibaba.dubbo.config.annotation.Reference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +23,6 @@ public class RefundController {
 
     @Reference(version = "1.0.0", timeout = 3000)
     private CheckService checkService;
-
 
     @RequestMapping(path = "/query/{id}", method = RequestMethod.GET)
     @ResponseBody

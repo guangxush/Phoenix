@@ -1,6 +1,9 @@
 # base URL
 server:
   port: 8081
+
+# spring
+spring:
   dubbo:
     application:
       name: provider
@@ -10,9 +13,6 @@ server:
     protocol:
       name: dubbo
       port: 20880
-
-# spring
-spring:
   resources:
     static-locations: classpath:/static/
   # Mysql data source
